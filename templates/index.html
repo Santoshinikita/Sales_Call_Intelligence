@@ -1,0 +1,170 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sales Call Intelligence</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #f4f4f4;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 250px;
+            padding: 10px;
+            font-size: 15px;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            margin-top: 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #fafafa;
+            border-radius: 8px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 6px;
+        }
+
+        h1 {
+            color: #2563eb;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        ul {
+            line-height: 1.8;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Sales Call Intelligence</h1>
+
+    <form action="/analyze" method="post">
+
+        <textarea
+            name="transcript"
+            placeholder="Paste transcript here..."
+        >{{ transcript if transcript else '' }}</textarea>
+
+        <br>
+
+        <button type="submit">
+            Analyze Call
+        </button>
+
+    </form>
+
+    {% if result %}
+
+    <div class="section">
+        <h2>MEDDIC Analysis</h2>
+
+        {% for key, value in result.meddic.items() %}
+        <div class="card">
+            <h3>{{ key }}</h3>
+
+            <p><b>Value:</b> {{ value.value }}</p>
+            <p><b>Confidence:</b> {{ value.confidence }}</p>
+            <p><b>Quote:</b> {{ value.quote }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="section">
+        <h2>Objections</h2>
+
+        {% for objection in result.objections %}
+        <div class="card">
+            <p><b>Objection:</b> {{ objection.objection }}</p>
+            <p><b>Category:</b> {{ objection.category }}</p>
+            <p><b>Handling:</b> {{ objection.handling }}</p>
+            <p><b>Suggestion:</b> {{ objection.suggestion }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="section">
+        <h2>Deal Intelligence</h2>
+
+        <div class="card">
+            <p><b>Deal Risk:</b> {{ result.deal_intelligence.deal_risk }}/10</p>
+
+            <h3>Risk Factors</h3>
+            <ul>
+            {% for risk in result.deal_intelligence.risk_factors %}
+                <li>{{ risk }}</li>
+            {% endfor %}
+            </ul>
+
+            <h3>Buying Signals</h3>
+            <ul>
+            {% for signal in result.deal_intelligence.buying_signals %}
+                <li>{{ signal }}</li>
+            {% endfor %}
+            </ul>
+
+            <h3>Next Actions</h3>
+            <ul>
+            {% for action in result.deal_intelligence.next_actions %}
+                <li>{{ action }}</li>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Rep Coaching</h2>
+
+        <div class="card">
+            <p><b>Talk Ratio:</b> {{ result.coaching.talk_ratio }}</p>
+            <p><b>Question Quality:</b> {{ result.coaching.question_quality }}</p>
+
+            <h3>Top Coaching Points</h3>
+
+            <ul>
+            {% for point in result.coaching.top_coaching_points %}
+                <li>{{ point }}</li>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>
